@@ -30,11 +30,11 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(Login login) {
 
-        String token = userBean.login(login);
+        LoggedUser loggedUser = userBean.login(login);
         Response response;
 
-        if (token != null) {
-            response = Response.status(200).entity(token).build();
+        if (loggedUser != null) {
+            response = Response.status(200).entity(loggedUser).build();
         } else {
             response = Response.status(401).entity("Invalid credentials").build();
         }

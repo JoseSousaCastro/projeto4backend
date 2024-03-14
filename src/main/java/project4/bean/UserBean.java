@@ -2,6 +2,7 @@ package project4.bean;
 
 import project4.dao.TaskDao;
 import project4.dao.UserDao;
+import project4.dto.LoggedUser;
 import project4.dto.Login;
 import project4.dto.Task;
 import project4.dto.User;
@@ -72,14 +73,14 @@ public class UserBean implements Serializable {
     }
 
     //Permite ao utilizador entrar na app, gera token
-    public String login(Login user) {
+    public LoggedUser login(Login user) {
         UserEntity userEntity = userDao.findUserByUsername(user.getUsername());
         if (userEntity != null && userEntity.isVisible()) {
             //Verifica se a password coincide com a password encriptada
             if (BCrypt.checkpw(user.getPassword(), userEntity.getPassword())) {
                 String token = generateNewToken();
                 userEntity.setToken(token);
-                return token;
+                return convertUserEntitytoLoggedUserDto(userEntity);
             }
         }
         return null;
@@ -177,6 +178,22 @@ public class UserBean implements Serializable {
         user.setPhone(userEntity.getPhone());
         user.setPhotoURL(userEntity.getPhotoURL());
         user.setVisible(userEntity.isVisible());
+
+        return user;
+    }
+
+    public LoggedUser convertUserEntitytoLoggedUserDto(UserEntity userEntity) {
+        LoggedUser user = new LoggedUser();
+        user.setUsername(userEntity.getUsername());
+        user.setPassword(userEntity.getPassword());
+        user.setTypeOfUser(userEntity.getTypeOfUser());
+        user.setEmail(userEntity.getEmail());
+        user.setFirstName(userEntity.getFirstName());
+        user.setLastName(userEntity.getLastName());
+        user.setPhone(userEntity.getPhone());
+        user.setPhotoURL(userEntity.getPhotoURL());
+        user.setVisible(userEntity.isVisible());
+        user.setToken(userEntity.getToken());
 
         return user;
     }
