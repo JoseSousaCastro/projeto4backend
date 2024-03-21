@@ -139,6 +139,9 @@ public class UserBean implements Serializable {
         if (u != null) {
             ArrayList<TaskEntity> tasks = taskDao.findTasksByUser(u);
             UserEntity notAssigned = userDao.findUserByUsername("NOTASSIGNED");
+
+            notAssigned.addNewTasks(tasks);
+
             for (TaskEntity t : tasks) {
                 t.setOwner(notAssigned);
                 taskDao.merge(t);

@@ -3,6 +3,7 @@ package project4.entity;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Set;
 
 @Entity
@@ -142,4 +143,10 @@ public class UserEntity implements Serializable{
     public boolean isVisible() {return visible;}
 
     public void setVisible(boolean visivel) {this.visible = visivel;}
+
+    public void addNewTasks(ArrayList<TaskEntity> tasks) {
+        for (TaskEntity task : tasks) {
+            userTasks.add(task);
+        }
+    }
 }
