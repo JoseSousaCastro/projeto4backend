@@ -172,17 +172,16 @@ public class UserService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateUser(@PathParam("username") String username, @HeaderParam("token") String token, User user) {
+        System.out.println("****************** USER " + user);
         Response response;
 
         User userUpdate = userBean.getUser(username);
 
-        //Verifica se o username existe na base de dados
         if (userUpdate==null){
             response = Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
             return response;
         }
 
-        //Verifica se token existe de quem consulta e se é Product Owner ou o próprio user
         if (userBean.isAuthenticated(token) && userBean.userIsProductOwner(token) || userBean.thisTokenIsFromThisUsername(token,username)) {
             if (!userBean.isEmailUpdatedValid(user) && user.getEmail() != null) {
                 response = Response.status(422).entity("Invalid email").build();
@@ -200,7 +199,7 @@ public class UserService {
         }else {
             response = Response.status(401).entity("Invalid credentials").build();
         }
-    return response;
+        return response;
     }
 
 
@@ -469,11 +468,12 @@ public class UserService {
     @PUT
     @Path("/updatetask/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateTask(@HeaderParam("token") String token, @HeaderParam("categoryName") String categoryName, @HeaderParam("startDate") String startDate, @HeaderParam("limitDate") String limitDate,  @PathParam("id") String id, Task task) {
+    public Response updateTask(@HeaderParam("token") String token, @PathParam("id") String id, Task task) {
+
         Response response;
         if (userBean.isAuthenticated(token)) {
             if (userBean.userIsTaskOwner(token, id) || userBean.userIsScrumMaster(token) || userBean.userIsProductOwner(token)) {
-                boolean updated = taskBean.updateTask(task, id, categoryName, startDate, limitDate);
+                boolean updated = taskBean.updateTask(task, id);
                 if (updated) {
                     response = Response.status(200).entity("Task updated successfully").build();
                 } else {

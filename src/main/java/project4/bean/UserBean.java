@@ -459,13 +459,13 @@ public class UserBean implements Serializable {
     public boolean isEmailUpdatedValid(User user) {
 
         //Se for null é porque não houve nenhuma atualização
-        if (user.getEmail() == null){
+        if (user.getEmail() == null || user.getEmail().isEmpty() || user.getEmail().isBlank()){
             return true;
         }
 
         UserEntity u = userDao.findUserByEmail(user.getEmail());
         // Check if the email format is valid
-        if (isEmailFormatValid(user.getEmail()) && u == null) {
+        if ((isEmailFormatValid(user.getEmail()) && u == null) || (u != null && u.getEmail().equals(user.getEmail()))) {
             return true;
         }
 

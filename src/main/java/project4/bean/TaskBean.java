@@ -84,19 +84,17 @@ public class TaskBean implements Serializable {
         return userTasks;
     }
 
-    public boolean updateTask(Task task, String id, String categoryName, String startDate, String limitDate) {
+    public boolean updateTask(Task task, String id) {
         TaskEntity taskEntity = taskDao.findTaskById(id);
         Task taskDto = taskBean.convertTaskEntityToTaskDto(taskEntity);
         User taskOwner = taskDto.getOwner();
-        LocalDate start = LocalDate.parse(startDate);
-        LocalDate limit = LocalDate.parse(limitDate);
 
         boolean edited = false;
         task.setId(id);
         task.setOwner(taskOwner);
-        task.setStartDate(start);
-        task.setLimitDate(limit);
-        task.setCategory(categoryBean.convertCategoryEntityToCategoryDto(categoryDao.findCategoryByName(categoryName)));
+        task.setStartDate(task.getStartDate());
+        task.setLimitDate(task.getLimitDate());
+        task.setCategory(categoryBean.convertCategoryEntityToCategoryDto(categoryDao.findCategoryByName(task.getCategory().getName())));
         if (taskDao.findTaskById(task.getId()) != null) {
             if (validateTask(task)) {
                 taskDao.merge(convertTaskToEntity(task));
