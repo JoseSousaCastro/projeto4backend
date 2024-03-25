@@ -10,7 +10,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Path("/users")
@@ -407,7 +406,6 @@ public class UserService {
 
         if (userBean.isAuthenticated(token)) {
             ArrayList<Task> allTasks = taskBean.getAllTasks(token);
-            allTasks.sort(Comparator.comparing(Task::getPriority, Comparator.reverseOrder()).thenComparing(Comparator.comparing(Task::getStartDate).thenComparing(Task::getLimitDate)));
             response = Response.status(Response.Status.OK).entity(allTasks).build();
         } else {
             response = Response.status(401).entity("Invalid credentials").build();
@@ -425,7 +423,6 @@ public class UserService {
         if (userBean.isAuthenticated(token)) {
             if (userBean.thisTokenIsFromThisUsername(token, username) || userBean.userIsProductOwner(token) || userBean.userIsScrumMaster(token)){
                 ArrayList<Task> userTasks = taskBean.getAllTasksFromUser(username, token);
-                userTasks.sort(Comparator.comparing(Task::getPriority, Comparator.reverseOrder()).thenComparing(Comparator.comparing(Task::getStartDate).thenComparing(Task::getLimitDate)));
                 response = Response.status(Response.Status.OK).entity(userTasks).build();
             } else {
                 response = Response.status(406).entity("You don't have permission for this request").build();
